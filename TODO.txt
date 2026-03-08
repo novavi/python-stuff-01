@@ -1,0 +1,21 @@
+TODO
+----
+x Phase 1 - Download JSON data
+x Phase 2 - Download images
+ Phase 3 - Insert data into SQLite
+
+
+----------
+
+
+Yu-Gi-Oh! API by YGOPRODeck
+https://ygoprodeck.com/api-guide/
+
+Example API request #1
+https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Baby%20Dragon|Time%20Wizard
+
+Example API request #2
+https://db.ygoprodeck.com/api/v7/cardinfo.php?atk=gte0
+
+Count number of cards in downloaded JSON file
+python3 -c "import json; f=open('public-yugioh-card-data.json'); d=json.load(f); print(len(d['data']))"
