@@ -1,6 +1,6 @@
 CREATE TABLE card (
     id                      INTEGER PRIMARY KEY AUTOINCREMENT,
-    card_id                 INTEGER,
+    card_passcode_id        INTEGER UNIQUE,
     name                    TEXT,
     type                    TEXT,
     human_readable_card_type TEXT,

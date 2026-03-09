@@ -161,7 +161,7 @@ Stores one row per Yu-Gi-Oh card. Image URLs and prices are stored directly on t
 | Column | Type | Notes |
 |--------|------|-------|
 | `id` | INTEGER PRIMARY KEY AUTOINCREMENT | Auto-generated row ID |
-| `card_id` | INTEGER | From JSON `id` field |
+| `card_passcode_id` | INTEGER UNIQUE | From JSON `id` field (referred to as a "passcode" in the API docs) — unique constraint prevents duplicate rows on re-run. Named `card_passcode_id` rather than `card_id` to avoid confusion with `card_set_link.card_id`, which is a foreign key to `card.id` |
 | `name` | TEXT | |
 | `type` | TEXT | e.g. `"Spell Card"`, `"Effect Monster"` |
 | `human_readable_card_type` | TEXT | From `humanReadableCardType` |
@@ -208,6 +208,8 @@ Stores one row per unique card set (identified by `set_name`).
 Resolves the many-to-many relationship between `card` and `card_set`. A card can belong to many sets, and a set contains many cards.
 
 `set_rarity`, `set_rarity_code`, `set_code` and `set_price` are stored here rather than in `card_set` because they describe the **relationship** between a specific card and a specific set, not the set itself. For example, the same card can appear in the same set at multiple different rarities, each with its own set code and price. Storing these fields in `card_set` would make it impossible to represent this.
+
+**Duplicate prevention:** Because a card can appear in the same set at multiple rarities, a simple unique constraint on `(card_id, set_code)` is not sufficient to prevent duplicates on re-run. Instead, `load-yugioh-data.py` does a `SELECT` check against all six fields (`card_id`, `card_set_id`, `set_code`, `set_rarity`, `set_rarity_code`, `set_price`) before inserting, and only inserts if no matching row is found.
 
 | Column | Type | Notes |
 |--------|------|-------|

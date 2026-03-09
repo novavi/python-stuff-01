@@ -2,7 +2,7 @@ import json
 import os
 import sqlite3
 
-top10_only = True
+top10_only = False
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 json_file_path = os.path.join(this_dir, "public-yugioh-card-data.json")
@@ -22,7 +22,7 @@ database = sqlite3.connect(database_file_path)
 for card in cards:
 
     print("Load card", card["id"], card["name"])
-    card_id = card["id"]
+    card_passcode_id = card["id"]
     card_name = card["name"]
     card_type = card["type"]
     human_readable_card_type = card["humanReadableCardType"]
@@ -51,7 +51,7 @@ for card in cards:
 
     card_image = None
     for img in card["card_images"]:
-        if img["id"] == card_id:
+        if img["id"] == card_passcode_id:
             card_image = img
             break
 
@@ -76,7 +76,7 @@ for card in cards:
 
     database.execute("""
         INSERT OR IGNORE INTO card (
-            card_id, name, type, human_readable_card_type, frame_type,
+            card_passcode_id, name, type, human_readable_card_type, frame_type,
             desc, race, archetype, attribute, atk, def, level, scale,
             linkval, linkmarkers, typeline, pend_desc, monster_desc,
             ygoprodeck_url, image_url, image_url_small, image_url_cropped,
@@ -91,7 +91,7 @@ for card in cards:
             ?, ?, ?
         )
     """, (
-        card_id, card_name, card_type, human_readable_card_type, frame_type,
+        card_passcode_id, card_name, card_type, human_readable_card_type, frame_type,
         card_desc, race, archetype, attribute, atk, def_, level, scale,
         linkval, linkmarkers, typeline, pend_desc, monster_desc,
         ygoprodeck_url, image_url, image_url_small, image_url_cropped,
@@ -101,8 +101,8 @@ for card in cards:
 
     inserted_card = database.execute("""
         SELECT id FROM card
-        WHERE card_id = ?
-    """, (card_id,)).fetchone()
+        WHERE card_passcode_id = ?
+    """, (card_passcode_id,)).fetchone()
     card_record_id = inserted_card[0]
 
     for card_set in card.get("card_sets", []):
@@ -122,10 +122,21 @@ for card in cards:
         """, (set_name,)).fetchone()
         card_set_record_id = inserted_card_set[0]
 
-        database.execute("""
-            INSERT OR IGNORE INTO card_set_link (card_id, card_set_id, set_code, set_rarity, set_rarity_code, set_price)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """, (card_record_id, card_set_record_id, set_code, set_rarity, set_rarity_code, set_price))
+        existing_card_set_link = database.execute("""
+            SELECT id FROM card_set_link
+            WHERE card_id = ?
+            AND card_set_id = ?
+            AND set_code = ?
+            AND set_rarity = ?
+            AND set_rarity_code = ?
+            AND set_price = ?
+        """, (card_record_id, card_set_record_id, set_code, set_rarity, set_rarity_code, set_price)).fetchone()
+
+        if existing_card_set_link is None:
+            database.execute("""
+                INSERT INTO card_set_link (card_id, card_set_id, set_code, set_rarity, set_rarity_code, set_price)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (card_record_id, card_set_record_id, set_code, set_rarity, set_rarity_code, set_price))
 
 database.commit()
 database.close()
