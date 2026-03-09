@@ -207,6 +207,7 @@ Stores one row per Yu-Gi-Oh card. Image URLs and prices are stored directly on t
 | `ban_tcg` | TEXT | Nullable — from `banlist_info` |
 | `ban_ocg` | TEXT | Nullable — from `banlist_info` |
 | `ban_goat` | TEXT | Nullable — from `banlist_info` |
+| `created_at` | TEXT DEFAULT (datetime('now')) | Auto-set by SQLite to current UTC datetime on insert — no value needed in Python INSERT |
 
 ---
 
@@ -217,6 +218,7 @@ Stores one row per unique card set (identified by `set_name`).
 |--------|------|-------|
 | `id` | INTEGER PRIMARY KEY AUTOINCREMENT | Auto-generated row ID |
 | `set_name` | TEXT UNIQUE | e.g. `"Metal Raiders"` |
+| `created_at` | TEXT DEFAULT (datetime('now')) | Auto-set by SQLite to current UTC datetime on insert — no value needed in Python INSERT |
 
 ---
 
@@ -236,6 +238,7 @@ Resolves the many-to-many relationship between `card` and `card_set`. A card can
 | `set_rarity` | TEXT | e.g. `"Common"` |
 | `set_rarity_code` | TEXT | e.g. `"(C)"` |
 | `set_price` | TEXT | |
+| `created_at` | TEXT DEFAULT (datetime('now')) | Auto-set by SQLite to current UTC datetime on insert — no value needed in Python INSERT |
 
 ---
 

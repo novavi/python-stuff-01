@@ -29,12 +29,14 @@ CREATE TABLE card (
     price_coolstuffinc      TEXT,
     ban_tcg                 TEXT,
     ban_ocg                 TEXT,
-    ban_goat                TEXT
+    ban_goat                TEXT,
+    created_at              TEXT DEFAULT (datetime('now'))
 );
 
 CREATE TABLE card_set (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    set_name    TEXT UNIQUE
+    set_name    TEXT UNIQUE,
+    created_at  TEXT DEFAULT (datetime('now'))
 );
 
 CREATE TABLE card_set_link (
@@ -45,6 +47,7 @@ CREATE TABLE card_set_link (
     set_rarity      TEXT,
     set_rarity_code TEXT,
     set_price       TEXT,
+    created_at      TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (card_id) REFERENCES card(id),
     FOREIGN KEY (card_set_id) REFERENCES card_set(id)
 );
