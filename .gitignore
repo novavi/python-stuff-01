@@ -208,3 +208,6 @@ __marimo__/
 
 # Yu-Gi-Oh downloaded images
 public-yugioh-data/images/
+
+# Yu-Gi-Oh SQLite database
+public-yugioh-data/yugioh.db

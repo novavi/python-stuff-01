@@ -2,7 +2,8 @@ TODO
 ----
 x Phase 1 - Download JSON data
 x Phase 2 - Download images
- Phase 3 - Insert data into SQLite
+x Phase 3 - Insert data into SQLite
+x Function to parse YDK file data
 
 
 ----------
