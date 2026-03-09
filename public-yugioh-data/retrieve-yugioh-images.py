@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.error
 import json
 import os
 import time
@@ -28,21 +29,33 @@ for card in cards:
 
     yugioh_image_url = card_image["image_url"]
     yugioh_image_file_path = os.path.join(this_dir, "images", "cards", os.path.basename(yugioh_image_url))
-    with open(yugioh_image_file_path, "wb") as f:
-        f.write(urllib.request.urlopen(yugioh_image_url).read())
-    print("Save", yugioh_image_file_path)
+    try:
+        yugioh_image_data = urllib.request.urlopen(yugioh_image_url).read()
+        with open(yugioh_image_file_path, "wb") as f:
+            f.write(yugioh_image_data)
+        print("Save", yugioh_image_file_path)
+    except urllib.error.HTTPError:
+        print("Not found", yugioh_image_file_path)
 
     yugioh_image_url = card_image["image_url_small"]
     yugioh_image_file_path = os.path.join(this_dir, "images", "cards_small", os.path.basename(yugioh_image_url))
-    with open(yugioh_image_file_path, "wb") as f:
-        f.write(urllib.request.urlopen(yugioh_image_url).read())
-    print("Save", yugioh_image_file_path)
+    try:
+        yugioh_image_data = urllib.request.urlopen(yugioh_image_url).read()
+        with open(yugioh_image_file_path, "wb") as f:
+            f.write(yugioh_image_data)
+        print("Save", yugioh_image_file_path)
+    except urllib.error.HTTPError:
+        print("Not found", yugioh_image_file_path)
 
     yugioh_image_url = card_image["image_url_cropped"]
     yugioh_image_file_path = os.path.join(this_dir, "images", "cards_cropped", os.path.basename(yugioh_image_url))
-    with open(yugioh_image_file_path, "wb") as f:
-        f.write(urllib.request.urlopen(yugioh_image_url).read())
-    print("Save", yugioh_image_file_path)
+    try:
+        yugioh_image_data = urllib.request.urlopen(yugioh_image_url).read()
+        with open(yugioh_image_file_path, "wb") as f:
+            f.write(yugioh_image_data)
+        print("Save", yugioh_image_file_path)
+    except urllib.error.HTTPError:
+        print("Not found", yugioh_image_file_path)
 
     time.sleep(card_delay_seconds)
 

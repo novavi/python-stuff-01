@@ -125,6 +125,22 @@ The filename in each URL (e.g. `88819587.jpg`) is used as the saved filename. Th
      - For each of the three image URLs: extract filename from URL, download binary content, save to the correct folder
 2. Output folders are created by the script — no manual setup needed
 
+### Extension: Error Handling
+Some image URLs return HTTP 404 (not found), causing `urllib.request.urlopen()` to raise a `urllib.error.HTTPError` exception, which terminates the script before all images are downloaded.
+
+**Solution:** Wrap each of the three image download/save blocks in a `try/except urllib.error.HTTPError` block. If the request fails, print a "Not found" message and continue to the next step (either the next image type for the same card, or the next card). `urllib.error` must be imported alongside `urllib.request`.
+
+This pattern is applied identically to all three image types (`image_url`, `image_url_small`, `image_url_cropped`):
+```python
+try:
+    image_data = urllib.request.urlopen(yugioh_image_url).read()
+    with open(yugioh_image_file_path, "wb") as f:
+        f.write(image_data)
+    print("Save", yugioh_image_file_path)
+except urllib.error.HTTPError:
+    print("Not found", yugioh_image_file_path)
+```
+
 ---
 
 ## Phase 3 — Load Yu-Gi-Oh Card Data into SQLite
